@@ -29,7 +29,7 @@ contract CounterTest is Test, ContractDeployer {
 
     
 
-    string MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL");
+    // string MAINNET_RPC_URL = vm.envString("MAINNET_RPC_URL");
 
     
 
@@ -135,6 +135,41 @@ contract CounterTest is Test, ContractDeployer {
         
     }
 
+    function testIssuanceWithEth() public {
+        uint startAmount = 1e14;
+        
+
+        updateOracleList();
+        
+        factory.proposeOwner(owner);
+        vm.startPrank(owner);
+        factory.transferOwnership(owner);
+        vm.stopPrank();
+        payable(add1).transfer(11e18);
+        vm.startPrank(add1);
+        // console.log("FLOKI", IERC20(FLOKI).balanceOf(address(factory)));
+        
+        factory.issuanceIndexTokensWithEth{value: (1e18*1001)/1000}(1e18, 0);
+        // factory.redemption(indexToken.balanceOf(address(add1)), address(weth), 3);
+    }
+
+
+    // function testIssuanceWithTokens() public {
+    //     uint startAmount = 1e14;
+        
+    //     updateOracleList();
+        
+    //     factory.proposeOwner(owner);
+    //     vm.startPrank(owner);
+    //     factory.transferOwnership(owner);
+    //     vm.stopPrank();
+    //     usdt.transfer(add1, 1001e18);
+    //     vm.startPrank(add1);
+        
+    //     usdt.approve(address(factory), 1001e18);
+    //     factory.issuanceIndexTokens(address(usdt), 1000e18, 3);
+    //     factory.redemption(indexToken.balanceOf(address(add1)), address(weth), 3);
+    // }
     
     // function testIssuanceWithEth() public {
     //     uint startAmount = 1e14;
