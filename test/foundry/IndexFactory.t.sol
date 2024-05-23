@@ -51,6 +51,7 @@ contract CounterTest is Test, ContractDeployer {
         addLiquidityETH(positionManager, factoryAddress, token2, wethAddress, 1000e18, 1e18);
         addLiquidityETH(positionManager, factoryAddress, token3, wethAddress, 1000e18, 1e18);
         addLiquidityETH(positionManager, factoryAddress, token4, wethAddress, 1000e18, 1e18);
+        addLiquidityETH(positionManager, factoryAddress, crossChainToken, wethAddress, 1000e18, 1e18);
         addLiquidityETH(positionManager, factoryAddress, usdt, wethAddress, 1000e18, 1e18);
         
     }
@@ -147,131 +148,76 @@ contract CounterTest is Test, ContractDeployer {
         vm.stopPrank();
         payable(add1).transfer(11e18);
         vm.startPrank(add1);
-        // console.log("FLOKI", IERC20(FLOKI).balanceOf(address(factory)));
         
+        console.log(indexToken.balanceOf(add1));
         factory.issuanceIndexTokensWithEth{value: (1e18*1001)/1000}(1e18, 0);
-        // factory.redemption(indexToken.balanceOf(address(add1)), address(weth), 3);
+        console.log(indexToken.balanceOf(add1));
+    }
+
+    function testRedemptionWithEth() public {
+        uint startAmount = 1e14;
+        
+
+        updateOracleList();
+        
+        factory.proposeOwner(owner);
+        vm.startPrank(owner);
+        factory.transferOwnership(owner);
+        vm.stopPrank();
+        payable(add1).transfer(11e18);
+        vm.startPrank(add1);
+        
+        console.log(indexToken.balanceOf(add1));
+        factory.issuanceIndexTokensWithEth{value: (1e18*1001)/1000}(1e18, 0);
+        console.log(indexToken.balanceOf(add1));
+        factory.redemption(indexToken.balanceOf(address(add1)), 0, address(weth), 3);
+        console.log(indexToken.balanceOf(add1));
+    }
+
+    function testIssuanceWithUsdc() public {
+        uint startAmount = 1e14;
+        
+
+        updateOracleList();
+        
+        factory.proposeOwner(owner);
+        vm.startPrank(owner);
+        factory.transferOwnership(owner);
+        vm.stopPrank();
+        payable(add1).transfer(11e18);
+        usdt.transfer(add1, 1001e18);
+        vm.startPrank(add1);
+        
+        console.log(indexToken.balanceOf(add1));
+        usdt.approve(address(factory), 1001e18);
+        factory.issuanceIndexTokens(address(usdt), 1000e18, 0, 3);
+        console.log(indexToken.balanceOf(add1));
+    }
+
+    function testRedemptionWithUsdc() public {
+        uint startAmount = 1e14;
+        
+
+        updateOracleList();
+        
+        factory.proposeOwner(owner);
+        vm.startPrank(owner);
+        factory.transferOwnership(owner);
+        vm.stopPrank();
+        payable(add1).transfer(11e18);
+        usdt.transfer(add1, 1001e18);
+        vm.startPrank(add1);
+        
+        console.log(indexToken.balanceOf(add1));
+        usdt.approve(address(factory), 1001e18);
+        factory.issuanceIndexTokens(address(usdt), 1000e18, 0, 3);
+        console.log(indexToken.balanceOf(add1));
+        factory.redemption(indexToken.balanceOf(address(add1)), 0, address(usdt), 3);
+        console.log(indexToken.balanceOf(add1));
     }
 
 
-    // function testIssuanceWithTokens() public {
-    //     uint startAmount = 1e14;
-        
-    //     updateOracleList();
-        
-    //     factory.proposeOwner(owner);
-    //     vm.startPrank(owner);
-    //     factory.transferOwnership(owner);
-    //     vm.stopPrank();
-    //     usdt.transfer(add1, 1001e18);
-    //     vm.startPrank(add1);
-        
-    //     usdt.approve(address(factory), 1001e18);
-    //     factory.issuanceIndexTokens(address(usdt), 1000e18, 3);
-    //     factory.redemption(indexToken.balanceOf(address(add1)), address(weth), 3);
-    // }
     
-    // function testIssuanceWithEth() public {
-    //     uint startAmount = 1e14;
-        
-
-    //     updateOracleList();
-        
-    //     factory.proposeOwner(owner);
-    //     vm.startPrank(owner);
-    //     factory.transferOwnership(owner);
-    //     vm.stopPrank();
-    //     payable(add1).transfer(11e18);
-    //     vm.startPrank(add1);
-    //     // console.log("FLOKI", IERC20(FLOKI).balanceOf(address(factory)));
-        
-    //     factory.issuanceIndexTokensWithEth{value: (1e18*1001)/1000}(1e18);
-    //     factory.redemption(indexToken.balanceOf(address(add1)), address(weth), 3);
-    // }
-
-
-    // function testIssuanceWithTokens() public {
-    //     uint startAmount = 1e14;
-        
-    //     updateOracleList();
-        
-    //     factory.proposeOwner(owner);
-    //     vm.startPrank(owner);
-    //     factory.transferOwnership(owner);
-    //     vm.stopPrank();
-    //     usdt.transfer(add1, 1001e18);
-    //     vm.startPrank(add1);
-        
-    //     usdt.approve(address(factory), 1001e18);
-    //     factory.issuanceIndexTokens(address(usdt), 1000e18, 3);
-    //     factory.redemption(indexToken.balanceOf(address(add1)), address(weth), 3);
-    // }
-
-
-    // function testIssuanceWithTokensOutput() public {
-    //     uint startAmount = 1e14;
-        
-       
-    //     updateOracleList();
-        
-    //     factory.proposeOwner(owner);
-    //     vm.startPrank(owner);
-    //     factory.transferOwnership(owner);
-    //     vm.stopPrank();
-    //     usdt.transfer(add1, 1001e18);
-    //     vm.startPrank(add1);
-    //     usdt.approve(address(factory), 1001e18);
-    //     factory.issuanceIndexTokens(address(usdt), 1000e18, 3);
-    //     console.log("index token balance after isssuance", indexToken.balanceOf(address(add1)));
-    //     console.log("portfolio value after issuance", factory.getPortfolioBalance());
-    //     uint reallOut = factory.redemption(indexToken.balanceOf(address(add1)), address(usdt), 3);
-    //     console.log("index token balance after redemption", indexToken.balanceOf(address(add1)));
-    //     console.log("portfolio value after redemption", factory.getPortfolioBalance());
-    //     console.log("real out", reallOut);
-    //     console.log("usdt after redemption", usdt.balanceOf(add1));
-    // }
-    
-
-    
-
-    // function testGetPrice() public {
-        
-    //     address pool = factoryV3.getPool(
-    //         wethAddress,
-    //         address(token0),
-    //         3000
-    //     );
-        
-    //    (
-    //         uint160 sqrtPriceX96,
-    //         int24 tick,
-    //         uint16 observationIndex,
-    //         uint16 observationCardinality,
-    //         uint16 observationCardinalityNext,
-    //         uint8 feeProtocol,
-    //         bool unlocked
-    //     ) = IUniswapV3Pool(pool).slot0();
-    //     //swap
-    //     weth.deposit{value:1e16}();
-    //     weth.approve(address(swapRouter), 1e16);
-    //     ISwapRouter.ExactInputSingleParams memory params = ISwapRouter
-    //     .ExactInputSingleParams({
-    //         tokenIn: wethAddress,
-    //         tokenOut: address(token0),
-    //         // pool fee 0.3%
-    //         fee: 3000,
-    //         recipient: address(this),
-    //         deadline: block.timestamp,
-    //         amountIn: 1e16,
-    //         amountOutMinimum: 0,
-    //         // NOTE: In production, this value can be used to set the limit
-    //         // for the price the swap will push the pool to,
-    //         // which can help protect against price impact
-    //         sqrtPriceLimitX96: 0
-    //     });
-    //     uint finalAmountOut = swapRouter.exactInputSingle(params);
-
-    // }
 
 
     
