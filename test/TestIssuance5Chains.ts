@@ -36,7 +36,13 @@ import { addLiquidityEth, deployment, updateOracleList } from "./Deployer";
     let indexFactoryStorage : IndexFactoryStorage
     let indexFactory : IndexFactory
     let crossChainVault : CrossChainVault
+    let crossChainVault2 : CrossChainVault
+    let crossChainVault3 : CrossChainVault
+    let crossChainVault4 : CrossChainVault
     let crossChainIndexFactory : CrossChainIndexFactory
+    let crossChainIndexFactory2 : CrossChainIndexFactory
+    let crossChainIndexFactory3 : CrossChainIndexFactory
+    let crossChainIndexFactory4 : CrossChainIndexFactory
     let oracle : MockApiOracle
     let ethPriceOracle: MockV3Aggregator
 
@@ -65,7 +71,13 @@ import { addLiquidityEth, deployment, updateOracleList } from "./Deployer";
       indexFactoryStorage = deploymentObject.indexFactoryStorage,
       indexFactory = deploymentObject.indexFactory,
       crossChainVault = deploymentObject.crossChainVault,
+      crossChainVault2 = deploymentObject.crossChainVault2,
+      crossChainVault3 = deploymentObject.crossChainVault3,
+      crossChainVault4 = deploymentObject.crossChainVault4,
       crossChainIndexFactory = deploymentObject.crossChainIndexFactory,
+      crossChainIndexFactory2 = deploymentObject.crossChainIndexFactory2,
+      crossChainIndexFactory3 = deploymentObject.crossChainIndexFactory3,
+      crossChainIndexFactory4 = deploymentObject.crossChainIndexFactory4,
       oracle = deploymentObject.oracle,
       ethPriceOracle = deploymentObject.ethPriceOracle
     })
@@ -95,7 +107,7 @@ import { addLiquidityEth, deployment, updateOracleList } from "./Deployer";
             "30000000000000000000",
         ]
         const swapVersions = ["3", "3", "3", "3", "3"]
-        const chainSelectors = ["1", "1", "1", "2", "2"]
+        const chainSelectors = ["1", "2", "3", "4", "5"]
         await updateOracleList(linkToken, indexFactoryStorage, oracle, assetList, percentages, swapVersions, chainSelectors)
         //adding liquidity
         const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
@@ -109,6 +121,9 @@ import { addLiquidityEth, deployment, updateOracleList } from "./Deployer";
         await addLiquidityEth(owner, weth9, nft, crossChainToken, "1", "2000")
         await addLiquidityEth(owner, weth9, nft, linkToken, "10", "10000")
         await linkToken.transfer(crossChainIndexFactory.address, ethers.utils.parseEther("10"))
+        await linkToken.transfer(crossChainIndexFactory2.address, ethers.utils.parseEther("10"))
+        await linkToken.transfer(crossChainIndexFactory3.address, ethers.utils.parseEther("10"))
+        await linkToken.transfer(crossChainIndexFactory4.address, ethers.utils.parseEther("10"))
         await linkToken.transfer(indexFactory.address, ethers.utils.parseEther("10"))
         console.log("weth address", weth9.address)
         console.log("link address", linkToken.address)
